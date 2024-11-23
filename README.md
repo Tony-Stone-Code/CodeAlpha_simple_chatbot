@@ -83,7 +83,7 @@ http://localhost:5001
 ## Project Structure
 
 ```
-ai-chatbot/
+Basic chatbot/
 ├── app.py              # Flask application and routing
 ├── static/
 │   ├── style.css      # CSS styles and animations
@@ -103,7 +103,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Author
 
-Anthony Opoku-Achempong (Tony) - Data Scientist & Full Stack Developer
+Anthony Opoku-Achempong (Tony-Stone-Code) - Data Scientist & Full Stack Developer
 - Expertise in Data Science, ML, AI
 - Full Stack Development
 - Cybersecurity Focus
