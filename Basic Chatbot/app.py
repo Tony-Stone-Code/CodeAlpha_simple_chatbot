@@ -2,8 +2,31 @@ from flask import Flask, render_template, request, jsonify
 import json
 import random
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+from groq import Groq
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
+
+# Initialize Groq client
+groq_api_key = os.getenv('GROQ_API_KEY')
+groq_model = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')
+groq_client = None
+
+if groq_api_key:
+    try:
+        groq_client = Groq(api_key=groq_api_key)
+        print("✓ Groq API initialized successfully")
+    except Exception as e:
+        print(f"✗ Failed to initialize Groq API: {e}")
+        print("  Falling back to rule-based responses")
+else:
+    print("✗ GROQ_API_KEY not found in environment variables")
+    print("  Falling back to rule-based responses")
+    print("  Please create a .env file with your GROQ_API_KEY")
 
 # Enhanced conversation patterns and responses
 CONVERSATIONS = {
@@ -101,18 +124,67 @@ EXPERTISE = {
     }
 }
 
+def get_groq_response(message):
+    """Get response from Groq API"""
+    if not groq_client:
+        return None
+    
+    try:
+        # Create chat completion with system context about the chatbot's expertise
+        chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are Tony, an AI assistant and chatbot created by Anthony Opoku-Achempong "
+                        "(Tony-Stone-Code), a Data Scientist & Full Stack Developer. "
+                        "You have expertise in: Data Science & Analytics, Machine Learning, "
+                        "Artificial Intelligence, Full Stack Development, and Cybersecurity. "
+                        "You are friendly, helpful, and knowledgeable. Keep responses concise but informative, "
+                        "typically 2-3 sentences unless more detail is requested."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ],
+            model=groq_model,
+            temperature=0.7,
+            max_tokens=500,
+            top_p=1,
+            stream=False,
+        )
+        
+        response = chat_completion.choices[0].message.content
+        return response
+        
+    except Exception as e:
+        print(f"Error calling Groq API: {e}")
+        return None
+
+
 def get_best_response(message):
-    message = message.lower()
-    words = message.split()
+    """
+    Get the best response for the user's message.
+    Tries Groq API first, falls back to rule-based responses.
+    """
+    # Try Groq API first
+    groq_response = get_groq_response(message)
+    if groq_response:
+        return groq_response
+    
+    # Fallback to rule-based responses
+    message_lower = message.lower()
     
     # Check for conversational patterns first
     for category, content in CONVERSATIONS.items():
-        if any(pattern in message for pattern in content["patterns"]):
+        if any(pattern in message_lower for pattern in content["patterns"]):
             return random.choice(content["responses"])
     
     # Check for expertise-related questions
     for area, content in EXPERTISE.items():
-        if any(pattern in message for pattern in content["patterns"]):
+        if any(pattern in message_lower for pattern in content["patterns"]):
             return random.choice(content["responses"])
     
     # Default responses
