@@ -4,17 +4,20 @@ A modern, responsive chatbot application built with Flask, featuring an iOS-styl
 
 ## Features
 
-- 🤖 Intelligent conversation handling with natural language processing
+- 🤖 Intelligent conversation handling powered by Groq API inference
+- 🧠 Advanced natural language processing with large language models
 - 🎨 Modern iOS-style user interface
 - 🌓 Dynamic dark/light theme switching
 - 🌈 Animated gradient backgrounds
 - 📱 Fully responsive design
 - ✨ Smooth animations and transitions
 - 💬 Real-time chat interactions
+- 🔄 Automatic fallback to rule-based responses when API is unavailable
 
 ## Technical Stack
 
 - **Backend**: Python Flask
+- **AI Engine**: Groq API (Lightning-fast inference)
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Styling**: Custom CSS with iOS-inspired design
 - **Animations**: CSS animations and transitions
@@ -34,7 +37,7 @@ The chatbot is knowledgeable in various technical domains:
 1. Clone the repository:
 ```bash
 git clone https://github.com/Tony-Stone-Code/CodeAlpha_simple_chatbot.git
-cd simple-chatbot
+cd CodeAlpha_simple_chatbot/Basic\ Chatbot
 ```
 
 2. Install the required dependencies:
@@ -42,15 +45,26 @@ cd simple-chatbot
 pip install -r requirements.txt
 ```
 
-3. Run the application:
+3. Set up your Groq API key:
+```bash
+# Copy the .env.example file to .env
+cp .env.example .env
+
+# Edit the .env file and add your Groq API key
+# Get your API key from: https://console.groq.com/keys
+```
+
+4. Run the application:
 ```bash
 python3 app.py
 ```
 
-4. Open your browser and navigate to:
+5. Open your browser and navigate to:
 ```
 http://localhost:5001
 ```
+
+**Note:** The chatbot will use Groq API for intelligent responses. If no API key is provided, it will fall back to rule-based responses.
 
 ## Features in Detail
 
